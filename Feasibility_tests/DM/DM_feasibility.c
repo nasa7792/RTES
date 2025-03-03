@@ -28,7 +28,7 @@ int main()
 
     printf("Ex-6 Scenario (C1=1, C2=1, C3=1 ,C4=2; D1=2, D2=3, D3=7 , D4=15; )");
     numServices = 4;
-    if (DM_feasibility_test(numServices, ex6_deadline, ex6_wcet, ex6_deadline) == TRUE)
+    if (DM_feasibility_test(numServices, ex6_period, ex6_wcet, ex6_deadline) == TRUE)
         printf("DM Feasibility test passed ! \n");
     else
         printf("DM Feasibility test failed ! \n");
@@ -46,23 +46,27 @@ int main()
         printf("INFEASIBLE\n");
 }
 
-// compute utilization
-float utilization_calc(U32_T numServices, U32_T deadline[], U32_T wcet[])
+float compute_interference(int i, U32_T period[], U32_T wcet[], U32_T deadline[])
 {
-    float utilization = 0.0;
-    for (int i = 0; i < numServices; i++)
+    U32_T interference=0;
+    for (U32_T j = 0; j < i; j++) //j<<i
     {
-        utilization += (float)wcet[i] / deadline[i];
+        interference += (U32_T)(ceil((float)deadline[i] / period[j])) * wcet[j];
     }
-    return utilization;
+    return interference;
 }
 
 int DM_feasibility_test(U32_T numServices, U32_T period[], U32_T wcet[], U32_T deadline[])
 {
-    float utilization = utilization_calc(numServices, deadline, wcet);
+    float utilization;
+    for (U32_T i = 0; i < numServices; i++)
+    {
+        U32_T interference = compute_interference(i, period, wcet, deadline);
+        utilization = (float)wcet[i] / deadline[i] + (float)interference / deadline[i];
+    }
     if (utilization > 1.0)
     {
-        printf("schedule is not feasible since utilization value is %f\n", utilization);
+        printf("test failed task not schedulable \n");
         return FALSE;
     }
     return TRUE;
