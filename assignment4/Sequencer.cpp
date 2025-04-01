@@ -9,23 +9,48 @@
 #include <cstdint>
 #include <cstdio>
 #include "Sequencer.hpp"
+#include <csignal> // For signal handling
+
+std::atomic<bool> main_running{true}; // Global flag to track termination
+
+void signalHandler(int signum)
+{
+    syslog(LOG_INFO, "Received signal %d, stopping services...", signum);
+    main_running = false;
+}
 
 void service2()
 {
-    puts("this is service 2 implemented as a function\n");
+    std::puts("this is service 2 implemented as a function\n");
 }
 
 int main()
 {
-    // Example use of the sequencer/service classes:
-    Sequencer sequencer{};//default initlization 
-    sequencer.addService([]() {
-            puts("this is service 1 implemented in a lambda expression\n");
-        }, 1, 99, 5);
+    struct sigaction action{};
+    action.sa_handler = signalHandler;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
 
-    sequencer.addService(service2, 1, 98, 10);
+    sigaction(SIGINT, &action, nullptr);  // Handle Ctrl+C
+    sigaction(SIGTSTP, &action, nullptr); // Handle Ctrl
+
+    // Example use of the sequencer/service classes:
+    Sequencer sequencer{};
+    openlog("LOG_MSG", LOG_PID | LOG_PERROR, LOG_USER);
+    syslog(LOG_INFO, "SYSLOG TEST MESSAGE!");
+    sequencer.addService([]()
+                         { std::puts("this is service 1 implemented in a lambda expression\n"); }, 1, 99, 500);
+
+    sequencer.addService(service2, 1, 98, 1000);
 
     sequencer.startServices();
     // todo: wait for ctrl-c or some other terminating condition
+    while (main_running)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
     sequencer.stopServices();
+    syslog(LOG_INFO, "Services stopped, exiting...");
+    closelog();
 }
