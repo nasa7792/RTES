@@ -4,6 +4,12 @@
  * Original Authour-Steve Rizor 3/16/2025
  * Modified: Nalin Saxena/Bella Wolf
  * 
+ * Refrence and acknowledgement- For developing the code for this excerise we utilized chatgpt for getting the correct 
+ * syntax. Code related to logStats and timing was written with chatgpt
+ *
+ * The suggestion for using unique_ptr for storing the services was provided by the insructor -Steve Rizor
+ * The idea of using a run time test run_iteration_test and precomputing the value of iterations was also suggested by the 
+ * instructor during a discussion in office hours.
  */
 
 
