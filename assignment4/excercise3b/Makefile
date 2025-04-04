@@ -1,8 +1,8 @@
 CXX = g++
-CXXFLAGS = -std=c++23 -Wall -Werror -pedantic -pthread
-TARGET = Sequencer
+CXXFLAGS = -std=c++23 -Wall  -pedantic -pthread
+TARGET = 3b
 
-SRCS = Sequencer.cpp
+SRCS = 3b.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(TARGET)

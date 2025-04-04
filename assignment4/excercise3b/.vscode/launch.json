@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "z:/RTES/RTES/assignment4",
-      "program": "z:/RTES/RTES/assignment4/build/Debug/outDebug",
+      "cwd": "z:/RTES/RTES/assignment4/excercise3b",
+      "program": "z:/RTES/RTES/assignment4/excercise3b/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
